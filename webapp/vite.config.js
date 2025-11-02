@@ -1,31 +1,25 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   plugins: [react()],
+  preview: {
+    allowedHosts: ['neurax-main.onrender.com'], // 👈 Add this to allow Render preview
+  },
   server: {
     port: 3000,
-    host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: mode === 'production'
-          ? 'https://neurax-main.onrender.com'
-          : 'http://localhost:10000',
-        changeOrigin: true
+        target: 'https://neurax-server.onrender.com', // 👈 Your Python server
+        changeOrigin: true,
+        secure: true
       },
       '/socket.io': {
-        target: mode === 'production'
-          ? 'wss://neurax-main.onrender.com'
-          : 'ws://localhost:10000',
-        ws: true
+        target: 'wss://neurax-server.onrender.com',
+        ws: true,
+        secure: true,
+        changeOrigin: true
       }
     }
-  },
-  preview: {
-    allowedHosts: [
-      'neurax-main.onrender.com',
-      'neurax-1.onrender.com',
-      'localhost'
-    ]
   }
-}))
+})
