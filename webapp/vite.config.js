@@ -1,13 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// 🧠 Vite config that works for both local dev and Render
+// ✅ Universal config for both local dev & Render
 export default defineConfig(({ mode }) => ({
+  base: './', // fixes white screen issues in Render builds
   plugins: [react()],
   server: {
     port: 3000,
-    proxy: {
-      // Local dev only: forward WebSocket + API requests to backend
+    proxy: mode === 'development' ? {
       '/socket.io': {
         target: 'http://localhost:10000',
         ws: true
@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => ({
         target: 'http://localhost:10000',
         changeOrigin: true
       }
-    }
+    } : undefined
   },
   preview: {
     port: 4173,
@@ -26,6 +26,11 @@ export default defineConfig(({ mode }) => ({
     ]
   },
   build: {
-    outDir: 'dist'
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
   }
 }))
