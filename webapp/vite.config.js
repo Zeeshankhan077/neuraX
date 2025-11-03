@@ -1,28 +1,31 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// 🧠 Vite config that works for both local dev and Render
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
   server: {
     port: 3000,
     proxy: {
+      // Local dev only: forward WebSocket + API requests to backend
       '/socket.io': {
-        target: 'https://neurax-main.onrender.com',
+        target: 'http://localhost:10000',
         ws: true
+      },
+      '/api': {
+        target: 'http://localhost:10000',
+        changeOrigin: true
       }
     }
   },
-  // ✅ Optional in production, just helps Render preview.
   preview: {
-    port: 4173
+    port: 4173,
+    allowedHosts: [
+      'neurax-main.onrender.com',
+      'neurax-webapp.onrender.com'
+    ]
   },
-  // ✅ Allow Render to serve the built app without blocking
   build: {
-    outDir: 'dist',
-    rollupOptions: {
-      output: {
-        manualChunks: undefined
-      }
-    }
+    outDir: 'dist'
   }
 }))
