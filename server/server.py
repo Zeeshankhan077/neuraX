@@ -13,7 +13,7 @@ eventlet.monkey_patch()
 # =====================================================
 # ✅ CONFIGURATION
 # =====================================================
-app = Flask(_name_)
+app = Flask(__name__)
 CORS(app, resources={r"/": {"origins": ""}})
 app.config["OUTPUT_FOLDER"] = "outputs"
 os.makedirs(app.config["OUTPUT_FOLDER"], exist_ok=True)
@@ -160,7 +160,8 @@ def add_log(job_id, log):
 # =====================================================
 # ✅ START SERVER
 # =====================================================
-if _name_ == "_main_":
+if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 10000))
     logger.info(f"🚀 Starting NeuraX Cloud Compute Server on port {PORT}")
     socketio.run(app, host="0.0.0.0", port=PORT)
+
