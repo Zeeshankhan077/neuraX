@@ -714,7 +714,9 @@ if __name__ == '__main__':
     logger.info(f"   Port: {port}")
     logger.info(f"   Environment: {'LOCAL' if 'localhost' in host or host == '127.0.0.1' else 'PRODUCTION'}")
     logger.info("=" * 60)
-    socketio.run(app, host=host, port=port, debug=False)
+    # Note: On managed platforms (e.g., Render), Werkzeug blocks production runs by default.
+    # We explicitly allow it here since we manage threading mode and CORS.
+    socketio.run(app, host=host, port=port, debug=False, allow_unsafe_werkzeug=True)
 
 
 # Notes:
