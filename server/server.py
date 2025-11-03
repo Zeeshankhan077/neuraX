@@ -36,7 +36,7 @@ compute_nodes = {}  # node_id -> node_specs
 # ✅ LOGGING CONFIG
 # =====================================================
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(_name_)
+logger = logging.getLogger(__name__)
 
 
 # =====================================================
@@ -164,4 +164,5 @@ if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 10000))
     logger.info(f"🚀 Starting NeuraX Cloud Compute Server on port {PORT}")
     socketio.run(app, host="0.0.0.0", port=PORT)
+
 
