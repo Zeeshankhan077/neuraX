@@ -1,0 +1,46 @@
+# NeuraX Server Configuration (Tailscale Free Plan Optimized)
+# Defaults tuned for Tailscale Personal/Free plan constraints
+
+# Heartbeat Configuration
+heartbeat_interval_seconds: 30  # Node heartbeat interval (30-60s recommended for free plan)
+node_timeout_seconds: 300        # Mark node offline if no heartbeat for 5 minutes
+
+# Job Scheduling
+max_concurrent_jobs_per_node: 2  # Default max jobs per node (configurable per node)
+prefer_peer_transfer: true       # Prefer direct Tailscale P2P transfer over server relay
+
+# Chunking & Bandwidth
+default_chunk_size_minutes: 20   # Conservative chunk size (10-30 min recommended)
+artifact_cache_ttl_seconds: 3600 # Local node cache TTL (1 hour)
+
+# Tailnet Health Monitoring
+max_recommended_devices: 30      # Recommended max devices for free plan (well below 100 limit)
+warning_device_threshold: 50    # Warn when approaching free plan limit
+
+# Retry & Backoff
+max_retry_attempts: 3
+initial_retry_delay_seconds: 2
+max_retry_delay_seconds: 30
+retry_backoff_multiplier: 2
+retry_jitter: true              # Add jitter to avoid thundering herd
+
+# Database
+database_path: "neurax_nodes.db" # SQLite database path
+cleanup_interval_seconds: 60     # Run cleanup every minute
+
+# Logging
+log_level: "INFO"               # DEBUG, INFO, WARNING, ERROR
+log_file: null                  # null = stdout, or path to log file
+
+# Security
+require_tailscale_auth: false   # Require Tailscale auth for node registration (future)
+artifact_presigned_url_ttl: 300 # Presigned URL TTL for browser uploads (5 minutes)
+
+# Monitoring
+enable_metrics: false           # Minimal metrics for free plan (avoid telemetry overhead)
+metrics_interval_seconds: 300   # Emit aggregated metrics every 5 minutes
+
+
+
+
+
