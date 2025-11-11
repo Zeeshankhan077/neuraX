@@ -1,0 +1,95 @@
+// NeuraX Protocol Buffers Definition
+// gRPC service definitions for job execution, logging, and control
+
+syntax = "proto3";
+
+package neurax;
+
+// Job execution service
+service NeuraxNode {
+  // Execute a job and stream logs/results
+  rpc ExecuteJob(JobRequest) returns (stream JobResponse);
+  
+  // Stream logs for a running job
+  rpc StreamLogs(LogRequest) returns (stream LogResponse);
+  
+  // Cancel a running job
+  rpc CancelJob(CancelRequest) returns (CancelResponse);
+  
+  // Health check
+  rpc HealthCheck(HealthRequest) returns (HealthResponse);
+}
+
+// Job request
+message JobRequest {
+  string job_id = 1;
+  string mode = 2;  // "ai", "blender", "autocad", "custom"
+  string code = 3;  // Python code or command
+  string file_path = 4;  // Path to uploaded file (if any)
+  string command = 5;  // Custom CLI command
+  repeated string args = 6;  // Additional arguments
+  map<string, string> metadata = 7;  // Additional metadata
+  string artifact_url = 8;  // Presigned URL for artifact download (if not P2P)
+}
+
+// Job response (streamed)
+message JobResponse {
+  string job_id = 1;
+  JobStatus status = 2;
+  string stdout = 3;
+  string stderr = 4;
+  int32 exit_code = 5;
+  double progress = 6;  // 0.0 to 1.0
+  string checkpoint_url = 7;  // URL for checkpoint artifact
+  map<string, string> metadata = 8;
+}
+
+enum JobStatus {
+  RUNNING = 0;
+  COMPLETED = 1;
+  FAILED = 2;
+  CANCELLED = 3;
+}
+
+// Log request
+message LogRequest {
+  string job_id = 1;
+  bool follow = 2;  // Stream logs continuously
+}
+
+// Log response (streamed)
+message LogResponse {
+  string job_id = 1;
+  string level = 2;  // "INFO", "WARNING", "ERROR", "DEBUG"
+  string message = 3;
+  int64 timestamp = 4;  // Unix timestamp in milliseconds
+}
+
+// Cancel request
+message CancelRequest {
+  string job_id = 1;
+  string reason = 2;
+}
+
+// Cancel response
+message CancelResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Health request
+message HealthRequest {
+  // Empty for now
+}
+
+// Health response
+message HealthResponse {
+  bool healthy = 1;
+  string status = 2;
+  map<string, string> info = 3;  // Node info (GPU, tools, etc.)
+}
+
+
+
+
+
